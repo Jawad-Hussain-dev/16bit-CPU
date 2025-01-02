@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 16-bit CPU Project  
 
 ## Overview  
@@ -47,3 +48,7 @@ This project is a custom-designed **16-bit CPU**, developed as part of my univer
 - Implemented a ROM-based PCU instead of a digital circuit-based PCU.  
 - Ensured the architecture is extensible for future enhancements.  
 
+=======
+# 16bit-CPU
+A custom-designed 16-bit CPU built for my university project
+>>>>>>> a8f483d4705a1a2c6dbc86879453b9039a6c0dfe
