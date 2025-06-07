@@ -1,0 +1,77 @@
+# Console-only Makefile for Dungeon Crawler RPG
+# This version doesn't require SFML and builds a console-only game
+
+# Compiler and flags
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -g -DCONSOLE_ONLY
+INCLUDES = -Isrc
+
+# Directories
+SRCDIR = src
+OBJDIR = obj
+BINDIR = bin
+
+# Source files (excluding GUI files)
+SOURCES = $(filter-out $(SRCDIR)/GUI.cpp $(SRCDIR)/main.cpp, $(wildcard $(SRCDIR)/*.cpp))
+SOURCES := $(filter-out $(SRCDIR)/simple_main.cpp, $(SOURCES))
+SOURCES += $(SRCDIR)/simple_main.cpp
+OBJECTS = $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
+TARGET = $(BINDIR)/dungeon_crawler_console
+
+# Default target
+all: directories $(TARGET)
+
+# Create necessary directories
+directories:
+	@mkdir -p $(OBJDIR) $(BINDIR)
+
+# Main target
+$(TARGET): $(OBJECTS)
+	@echo "Linking $(TARGET)..."
+	$(CXX) $(OBJECTS) -o $@
+	@echo "Console build complete! Run with: ./$(TARGET)"
+
+# Object files
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	@echo "Compiling $<..."
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+
+# Debug build
+debug: CXXFLAGS += -DDEBUG -g3 -O0
+debug: directories $(TARGET)
+	@echo "Debug build complete!"
+
+# Release build
+release: CXXFLAGS += -DNDEBUG -O3
+release: directories $(TARGET)
+	@echo "Release build complete!"
+
+# Clean build files
+clean:
+	@echo "Cleaning build files..."
+	rm -rf $(OBJDIR) $(BINDIR)
+	@echo "Clean complete!"
+
+# Run the game
+run: $(TARGET)
+	./$(TARGET)
+
+# Test build (quick compilation check)
+test: CXXFLAGS += -fsyntax-only
+test:
+	@echo "Testing compilation..."
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(SOURCES)
+	@echo "Compilation test passed!"
+
+# Help target
+help:
+	@echo "Console-only build targets:"
+	@echo "  all     - Build the console game (default)"
+	@echo "  debug   - Build debug version"
+	@echo "  release - Build optimized release version"
+	@echo "  clean   - Remove all build files"
+	@echo "  run     - Build and run the game"
+	@echo "  test    - Test compilation without linking"
+	@echo "  help    - Show this help message"
+
+.PHONY: all directories debug release clean run test help
